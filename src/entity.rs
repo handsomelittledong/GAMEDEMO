@@ -8,10 +8,31 @@ trait EntityMethod{
 }
 
 struct Turret{
-    texes:Texture2D,
+    texes:Vec<Texture2D>,
     
     hp:f32,
     ap:f32,
+}
+
+impl EntityMethod for Turret{
+    fn draw(&self) {
+        todo!()
+    }
+    
+    fn update(&mut self) {
+        todo!()
+    }
+}
+
+impl Turret{
+    fn new()->Self{
+        Self{
+            texes:vec![],
+            
+            hp:1.0,
+            ap:1.0
+        }
+    }
 }
 
 //region BuildingLayer

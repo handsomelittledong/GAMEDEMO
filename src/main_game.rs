@@ -30,6 +30,7 @@ impl Game {
                     (MAP_SIZE.h * MAP_TILE_SPACING) as f32 / 2.0,
                 ),
                 zoom: vec2(1.0 / screen_width() * 2.0, 1.0 / screen_height() * 2.0),
+                // render_target:Some(render_target(screen_width() as u32,screen_height() as u32)),
                 ..Default::default()
             },
             texes: Textures::new(),
