@@ -1,7 +1,13 @@
 use crate::settings::TerrainType::*;
+use lazy_static::lazy_static;
 use macroquad::prelude::*;
 
 pub const GAME_TITLE: &str = "LastLineDemo";
+
+lazy_static! {
+    pub static ref SCALE: Vec2 = vec2(screen_width() / 1280.0, screen_height() / 720.0);
+}
+
 pub const MAP_IMG_PATH: [&str; 2] = ["res/grass.png", "res/gravel2.png"];
 
 pub enum TerrainType {
@@ -28,46 +34,16 @@ impl From<TerrainType> for i32 {
     }
 }
 
-pub struct Rect {
-    pub x: f32,
-    pub y: f32,
-    pub w: usize,
-    pub h: usize,
-}
+pub const MAP_SIZE: (usize, usize) = (30, 30);
+pub const MAP_TILE_SPACING: usize = 32; //for pixels
 
-impl Rect {
-    fn intersects(&self, other: &Rect) -> bool {
-        self.x < other.x + other.w as f32
-            && self.x + self.w as f32 > other.x
-            && self.y < other.y + other.h as f32
-            && self.y + self.h as f32 > other.y
-    }
-}
-
-pub const MAP_SIZE: Rect = Rect {
-    x: 0.0,
-    y: 0.0,
-    w: 30,
-    h: 30,
-};
-pub const MAP_TILE_SPACING: usize = 64; //for pixels
-
-pub const MAP: [[i32; MAP_SIZE.w]; MAP_SIZE.h] = [[0; MAP_SIZE.w]; MAP_SIZE.h]; //  test
+pub const MAP: [[i32; MAP_SIZE.0]; MAP_SIZE.1] = [[0; MAP_SIZE.0]; MAP_SIZE.1]; //  test
 
 pub const COLOR: Color = Color {
     r: 1.0,
     g: 1.0,
     b: 1.0,
     a: 1.0,
-};
-
-pub const DRAW_TEXTURE_PARAMS: DrawTextureParams = DrawTextureParams {
-    dest_size: Some(vec2(MAP_TILE_SPACING as f32, MAP_TILE_SPACING as f32)),
-    source: None,
-    rotation: 0.0,
-    flip_x: false,
-    flip_y: false,
-    pivot: None,
 };
 
 pub const CAMERA_SPEED: f32 = 180.0;

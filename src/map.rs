@@ -1,24 +1,24 @@
+use crate::main_game::{Game, LayerMethod};
+use crate::settings::*;
 use macroquad::math::vec2;
 use macroquad::miniquad::FilterMode;
-use crate::settings::*;
-use macroquad::prelude::{draw_texture_ex, screen_height, screen_width, Vec2};
-use crate::main_game::{Game, LayerMethod};
+use macroquad::prelude::{draw_texture, Vec2};
+use macroquad::window::{screen_height, screen_width};
 
 pub fn get_tile_id(world_pos: Vec2) -> (usize, usize) {
     let mut temp_x_id = (world_pos.x as usize) / MAP_TILE_SPACING;
     let mut temp_y_id = (world_pos.y as usize) / MAP_TILE_SPACING;
-    if temp_x_id == MAP_SIZE.w {
-        temp_x_id = MAP_SIZE.w - 1;
+    if temp_x_id == MAP_SIZE.0 {
+        temp_x_id = MAP_SIZE.0 - 1;
     }
-    if temp_y_id == MAP_SIZE.h {
-        temp_y_id = MAP_SIZE.h - 1;
+    if temp_y_id == MAP_SIZE.1 {
+        temp_y_id = MAP_SIZE.1 - 1;
     }
     (temp_x_id, temp_y_id)
 }
 
-
 //region MapLayer
- pub struct MapLayer {}
+pub struct MapLayer {}
 
 impl MapLayer {
     pub(crate) fn new() -> Self {
@@ -41,16 +41,14 @@ impl LayerMethod for MapLayer {
                     .texes
                     .get_map_tex(TerrainType::try_from(MAP[x][y]).unwrap());
                 temp.set_filter(FilterMode::Nearest);
-                draw_texture_ex(
+                draw_texture(
                     temp,
                     (x * MAP_TILE_SPACING) as f32,
                     (y * MAP_TILE_SPACING) as f32,
                     COLOR,
-                    DRAW_TEXTURE_PARAMS,
                 );
             }
         }
     }
 }
 //endregion
-

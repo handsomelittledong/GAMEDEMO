@@ -1,13 +1,15 @@
+use crate::entity::BuildingLayer;
 use crate::image::Textures;
 use crate::map::MapLayer;
 use crate::settings::*;
 use macroquad::prelude::*;
 use std::process::exit;
-use crate::entity::BuildingLayer;
 
-pub trait LayerMethod { 
-    fn update(&self, _game: &Game) {()}
-    
+pub trait LayerMethod {
+    fn update(&self, _game: &Game) {
+        ()
+    }
+
     fn draw(&self, _game: &Game) {}
 }
 
@@ -26,11 +28,13 @@ impl Game {
         Game {
             camera2d: Camera2D {
                 target: vec2(
-                    (MAP_SIZE.w * MAP_TILE_SPACING) as f32 / 2.0,
-                    (MAP_SIZE.h * MAP_TILE_SPACING) as f32 / 2.0,
+                    (MAP_SIZE.0 * MAP_TILE_SPACING) as f32 / 2.0,
+                    (MAP_SIZE.1 * MAP_TILE_SPACING) as f32 / 2.0,
                 ),
-                zoom: vec2(1.0 / screen_width() * 2.0, 1.0 / screen_height() * 2.0),
-                // render_target:Some(render_target(screen_width() as u32,screen_height() as u32)),
+                zoom: vec2(
+                    4.0 / screen_width() * SCALE.x,
+                    4.0 / screen_height() * SCALE.y,
+                ),
                 ..Default::default()
             },
             texes: Textures::new(),
@@ -41,13 +45,16 @@ impl Game {
     }
 
     pub async fn run(&mut self) {
+        let screen_visible_bound = self.get_screen_visible_bound();
+        println!("{0}{1}",screen_visible_bound.x,screen_visible_bound.y);
+        
         self.texes.load_all_map_tex().await;
 
         self.layers.push(Box::new(MapLayer::new()));
         self.layers.push(Box::new(BuildingLayer::new()));
 
         loop {
-            self.update();
+            self.update(screen_visible_bound);
 
             set_camera(&self.camera2d);
 
@@ -59,7 +66,7 @@ impl Game {
         }
     }
 
-    fn update(&mut self) {
+    fn update(&mut self, screen_visible_bound: Vec2) {
         self.delay = get_frame_time();
 
         for key in get_keys_down() {
@@ -73,16 +80,28 @@ impl Game {
             }
         }
 
-        if self.camera2d.target.y > (MAP_SIZE.h * MAP_TILE_SPACING) as f32 - screen_height() / 2.0 {
-            self.camera2d.target.y = (MAP_SIZE.h * MAP_TILE_SPACING) as f32 - screen_height() / 2.0;
-        } else if self.camera2d.target.y < screen_height() / 2.0 {
-            self.camera2d.target.y = screen_height() / 2.0;
+        if self.camera2d.target.y
+            > (MAP_SIZE.1 * MAP_TILE_SPACING) as f32 - screen_visible_bound.y / 2.0
+        {
+            self.camera2d.target.y =
+                (MAP_SIZE.1 * MAP_TILE_SPACING ) as f32 - screen_visible_bound.y / 2.0;
+        } else if self.camera2d.target.y < (screen_visible_bound.y / 2.0) {
+            self.camera2d.target.y = screen_visible_bound.y / 2.0;
         }
-        if self.camera2d.target.x > (MAP_SIZE.w * MAP_TILE_SPACING) as f32 - screen_width() / 2.0 {
-            self.camera2d.target.x = (MAP_SIZE.w * MAP_TILE_SPACING) as f32 - screen_width() / 2.0;
-        } else if self.camera2d.target.x < screen_width() / 2.0 {
-            self.camera2d.target.x = screen_width() / 2.0;
+        if self.camera2d.target.x
+            > (MAP_SIZE.0 * MAP_TILE_SPACING) as f32 - screen_visible_bound.x / 2.0
+        {
+            self.camera2d.target.x =
+                (MAP_SIZE.0 * MAP_TILE_SPACING) as f32 - screen_visible_bound.x / 2.0;
+        } else if self.camera2d.target.x < (screen_visible_bound.x / 2.0){
+            self.camera2d.target.x = screen_visible_bound.x/ 2.0;
         }
+    }
+
+    fn get_screen_visible_bound(&self) -> Vec2 {
+        let left_top_pos = self.camera2d.screen_to_world(vec2(0.0, 0.0));
+        let right_bottom_pos = self.camera2d.screen_to_world(vec2(screen_width(), screen_height()));
+        right_bottom_pos -left_top_pos
     }
 }
 
