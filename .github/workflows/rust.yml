@@ -22,6 +22,9 @@ jobs:
       run: mkdir release
     - name: move exe
       run: move target\release\LastLineDemo.exe release\LastLineDemo.exe
+    - name: 获取提交信息
+      id: get_message
+      run: echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
     - name: 发布到 GitHub Releases
       uses: softprops/action-gh-release@v1
       with:
