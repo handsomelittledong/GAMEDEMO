@@ -8,7 +8,7 @@ lazy_static! {
     pub static ref SCALE: Vec2 = vec2(screen_width() / 1280.0, screen_height() / 720.0);
 }
 
-pub const MAP_IMG_PATH: [&str; 2] = ["res/grass.png", "res/gravel2.png"];
+pub const MAP_IMG_PATH:&str = "res/map/";
 
 pub enum TerrainType {
     Grass = 0,
@@ -24,6 +24,16 @@ impl TryFrom<i32> for TerrainType {
             1 => Ok(Gravel),
             2 => Ok(River),
             _ => Err("out of range"),
+        }
+    }
+}
+
+impl ToString for TerrainType {
+    fn to_string(&self) -> String {
+        match self{
+            Grass => "grass".to_string(),
+            Gravel => "gravel".to_string(),
+            River => "river".to_string(),
         }
     }
 }

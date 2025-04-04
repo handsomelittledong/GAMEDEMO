@@ -46,9 +46,8 @@ impl Game {
 
     pub async fn run(&mut self) {
         let screen_visible_bound = self.get_screen_visible_bound();
-        println!("{0}{1}", screen_visible_bound.x, screen_visible_bound.y);
 
-        self.texes.load_all_map_tex().await;
+        self.texes.load_all_map_tex().await.unwrap();
 
         self.layers.push(Box::new(MapLayer::new()));
         self.layers.push(Box::new(BuildingLayer::new()));

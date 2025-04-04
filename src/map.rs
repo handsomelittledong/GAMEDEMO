@@ -38,7 +38,7 @@ impl LayerMethod for MapLayer {
             for y in left_top_tile_id.1..=right_bottom_tile_id.1 {
                 let temp = game
                     .texes
-                    .get_map_tex(TerrainType::try_from(MAP[x][y]).unwrap());
+                    .get_map_tex(TerrainType::try_from(MAP[x][y]).unwrap(),0);
                 draw_texture(
                     temp,
                     (x * MAP_TILE_SPACING) as f32,
