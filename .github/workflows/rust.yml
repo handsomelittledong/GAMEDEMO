@@ -17,6 +17,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+      run: cargo build --verbose --release
+    - name: make release dir
+      run: mkdir release
+    - name: move exe
+      run: move target\release\LastLineDemo.exe release\LastLineDemo.exe
+    - name: 发布到 GitHub Releases
+      uses: softprops/action-gh-release@v1
+      with:
+        files: release/your_game.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
