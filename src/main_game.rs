@@ -46,8 +46,8 @@ impl Game {
 
     pub async fn run(&mut self) {
         let screen_visible_bound = self.get_screen_visible_bound();
-        println!("{0}{1}",screen_visible_bound.x,screen_visible_bound.y);
-        
+        println!("{0}{1}", screen_visible_bound.x, screen_visible_bound.y);
+
         self.texes.load_all_map_tex().await;
 
         self.layers.push(Box::new(MapLayer::new()));
@@ -84,7 +84,7 @@ impl Game {
             > (MAP_SIZE.1 * MAP_TILE_SPACING) as f32 - screen_visible_bound.y / 2.0
         {
             self.camera2d.target.y =
-                (MAP_SIZE.1 * MAP_TILE_SPACING ) as f32 - screen_visible_bound.y / 2.0;
+                (MAP_SIZE.1 * MAP_TILE_SPACING) as f32 - screen_visible_bound.y / 2.0;
         } else if self.camera2d.target.y < (screen_visible_bound.y / 2.0) {
             self.camera2d.target.y = screen_visible_bound.y / 2.0;
         }
@@ -93,15 +93,17 @@ impl Game {
         {
             self.camera2d.target.x =
                 (MAP_SIZE.0 * MAP_TILE_SPACING) as f32 - screen_visible_bound.x / 2.0;
-        } else if self.camera2d.target.x < (screen_visible_bound.x / 2.0){
-            self.camera2d.target.x = screen_visible_bound.x/ 2.0;
+        } else if self.camera2d.target.x < (screen_visible_bound.x / 2.0) {
+            self.camera2d.target.x = screen_visible_bound.x / 2.0;
         }
     }
 
     fn get_screen_visible_bound(&self) -> Vec2 {
         let left_top_pos = self.camera2d.screen_to_world(vec2(0.0, 0.0));
-        let right_bottom_pos = self.camera2d.screen_to_world(vec2(screen_width(), screen_height()));
-        right_bottom_pos -left_top_pos
+        let right_bottom_pos = self
+            .camera2d
+            .screen_to_world(vec2(screen_width(), screen_height()));
+        right_bottom_pos - left_top_pos
     }
 }
 

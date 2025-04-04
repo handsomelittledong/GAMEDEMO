@@ -1,7 +1,6 @@
 use crate::main_game::{Game, LayerMethod};
 use crate::settings::*;
 use macroquad::math::vec2;
-use macroquad::miniquad::FilterMode;
 use macroquad::prelude::{draw_texture, Vec2};
 use macroquad::window::{screen_height, screen_width};
 
@@ -40,7 +39,6 @@ impl LayerMethod for MapLayer {
                 let temp = game
                     .texes
                     .get_map_tex(TerrainType::try_from(MAP[x][y]).unwrap());
-                temp.set_filter(FilterMode::Nearest);
                 draw_texture(
                     temp,
                     (x * MAP_TILE_SPACING) as f32,
