@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use crate::settings::TerrainType::*;
 use lazy_static::lazy_static;
 use macroquad::prelude::*;
@@ -10,44 +11,49 @@ lazy_static! {
 
 pub const MAP_IMG_PATH:&str = "res/map/";
 
+#[derive(Clone, Copy)]
 pub enum TerrainType {
-    Grass = 0,
-    Gravel = 1,
-    River = 2,
+    Grass,
+    Gravel,
+    Ground,
+    River,
 }
 
-impl TryFrom<i32> for TerrainType {
-    type Error = &'static str;
-    fn try_from(value: i32) -> Result<Self, Self::Error> {
-        match value {
-            0 => Ok(Grass),
-            1 => Ok(Gravel),
-            2 => Ok(River),
-            _ => Err("out of range"),
-        }
-    }
-}
-
-impl ToString for TerrainType {
-    fn to_string(&self) -> String {
-        match self{
+impl Display for TerrainType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let str = match self {
             Grass => "grass".to_string(),
             Gravel => "gravel".to_string(),
             River => "river".to_string(),
-        }
+            Ground=>"ground".to_string(),
+        };
+        write!(f, "{}", str)
     }
 }
 
-impl From<TerrainType> for i32 {
-    fn from(tile: TerrainType) -> Self {
-        tile as i32
+
+#[derive(Copy, Clone)]
+pub struct Tile{
+    pub terrain_type: TerrainType,
+    pub tex_id:usize,
+}
+
+impl Tile{
+    const fn new(terrain_type: TerrainType,tex_id:usize)->Self{
+        Tile{terrain_type,tex_id}
     }
+}
+
+macro_rules! tile {
+    ($terrain:ident, $tex_id:expr) => {
+        Tile::new(TerrainType::$terrain, $tex_id)
+    };
 }
 
 pub const MAP_SIZE: (usize, usize) = (30, 30);
 pub const MAP_TILE_SPACING: usize = 32; //for pixels
 
-pub const MAP: [[i32; MAP_SIZE.0]; MAP_SIZE.1] = [[0; MAP_SIZE.0]; MAP_SIZE.1]; //  test
+pub const  MAP: [[Tile; MAP_SIZE.0]; MAP_SIZE.1] = [[tile!(Ground,0); MAP_SIZE.0]; MAP_SIZE.1]; //  test
 
 pub const COLOR: Color = Color {
     r: 1.0,
