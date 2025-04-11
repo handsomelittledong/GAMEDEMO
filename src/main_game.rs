@@ -67,27 +67,35 @@ impl Game {
 
     fn update(&mut self, screen_visible_bound: Vec2) {
         self.delay = get_frame_time();
+        
+        let mut dir = vec2(0.0,0.0);
 
         for key in get_keys_down() {
             match key {
-                KeyCode::A => self.camera2d.target.x -= CAMERA_SPEED * self.delay,
-                KeyCode::D => self.camera2d.target.x += CAMERA_SPEED * self.delay,
-                KeyCode::W => self.camera2d.target.y -= CAMERA_SPEED * self.delay,
-                KeyCode::S => self.camera2d.target.y += CAMERA_SPEED * self.delay,
+                KeyCode::A => dir.x -= 1.0,
+                KeyCode::D => dir.x += 1.0,
+                KeyCode::W => dir.y -= 1.0,
+                KeyCode::S => dir.y += 1.0,
                 KeyCode::Escape => exit(0),
                 _ => (),
             }
         }
+        
+        if dir.length() > 0.0 {
+            dir = dir.normalize();
+        }
+        
+        self.camera2d.target += dir * self.delay * CAMERA_SPEED;
 
         self.camera2d.target.y = clamp(
             self.camera2d.target.y,
-            (screen_visible_bound.y / 2.0),
+            screen_visible_bound.y / 2.0,
             (MAP_SIZE.1 * MAP_TILE_SPACING) as f32 - screen_visible_bound.y / 2.0,
         );
 
         self.camera2d.target.x = clamp(
             self.camera2d.target.x,
-            (screen_visible_bound.x / 2.0),
+            screen_visible_bound.x / 2.0,
             (MAP_SIZE.0 * MAP_TILE_SPACING) as f32 - screen_visible_bound.x / 2.0,
         );
     }
