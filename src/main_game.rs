@@ -32,8 +32,8 @@ impl Game {
                     (MAP_SIZE.1 * MAP_TILE_SPACING) as f32 / 2.0,
                 ),
                 zoom: vec2(
-                    4.0 / screen_width() * SCALE.x,
-                    4.0 / screen_height() * SCALE.y,
+                    5.0 / screen_width() * SCALE.x,
+                    5.0 / screen_height() * SCALE.y,
                 ),
                 ..Default::default()
             },
@@ -79,22 +79,17 @@ impl Game {
             }
         }
 
-        if self.camera2d.target.y
-            > (MAP_SIZE.1 * MAP_TILE_SPACING) as f32 - screen_visible_bound.y / 2.0
-        {
-            self.camera2d.target.y =
-                (MAP_SIZE.1 * MAP_TILE_SPACING) as f32 - screen_visible_bound.y / 2.0;
-        } else if self.camera2d.target.y < (screen_visible_bound.y / 2.0) {
-            self.camera2d.target.y = screen_visible_bound.y / 2.0;
-        }
-        if self.camera2d.target.x
-            > (MAP_SIZE.0 * MAP_TILE_SPACING) as f32 - screen_visible_bound.x / 2.0
-        {
-            self.camera2d.target.x =
-                (MAP_SIZE.0 * MAP_TILE_SPACING) as f32 - screen_visible_bound.x / 2.0;
-        } else if self.camera2d.target.x < (screen_visible_bound.x / 2.0) {
-            self.camera2d.target.x = screen_visible_bound.x / 2.0;
-        }
+        self.camera2d.target.y = clamp(
+            self.camera2d.target.y,
+            (screen_visible_bound.y / 2.0),
+            (MAP_SIZE.1 * MAP_TILE_SPACING) as f32 - screen_visible_bound.y / 2.0,
+        );
+
+        self.camera2d.target.x = clamp(
+            self.camera2d.target.x,
+            (screen_visible_bound.x / 2.0),
+            (MAP_SIZE.0 * MAP_TILE_SPACING) as f32 - screen_visible_bound.x / 2.0,
+        );
     }
 
     fn get_screen_visible_bound(&self) -> Vec2 {
